@@ -21,20 +21,69 @@ gmailButton.addEventListener("click", () => {
 const childBlock = document.querySelector(".child_block");
 const parentBlock = document.querySelector(".parent_block");
 
-let position = 0;
+let positionX = parentBlock.clientWidth - childBlock.offsetWidth
+let positionY = parentBlock.clientHeight - childBlock.offsetHeight
 
-function moveBlock() {
-    const parentWidth = parentBlock.offsetWidth;
-    const childWidth = childBlock.offsetWidth;
+let moveX = positionX
+let moveY = positionY
 
-    if (position >= parentWidth - childWidth) {
-        return;
+childBlock.style.left = positionX + 'px'
+childBlock.style.top = positionY + 'px'
+
+const moveBlock = () => {
+    if (positionX > 0 && positionY === moveY) {
+        positionX--
+        childBlock.style.left = positionX + 'px'
+    } else if (positionY > 0 && positionX === 0) {
+        positionY-- 
+        childBlock.style.top = positionY + 'px'
+    } else if (positionX < moveX && positionY === 0) {
+        positionX++ 
+        childBlock.style.left = positionX + 'px'
+    } else if (positionY < moveY && positionX === moveX) {
+        positionY++ 
+        childBlock.style.top = positionY + 'px'
     }
 
-    position++;
-    childBlock.style.left = position + "px";
-
-    setTimeout(moveBlock, 5);
+    requestAnimationFrame(moveBlock)
 }
 
-moveBlock();
+moveBlock()
+
+
+
+
+
+
+
+const secondsBlock = document.querySelector('#seconds')
+const startBtn = document.querySelector('#start')
+const stopBtn = document.querySelector('#stop')
+const resetBtn = document.querySelector('#reset')
+
+let seconds = 0
+let interval = null
+let isRunning = false
+
+startBtn.onclick = () => {
+    if (isRunning) return 
+
+    isRunning = true
+
+    interval = setInterval(() => {
+        seconds++
+        secondsBlock.innerText = seconds
+    }, 1000)
+}
+
+stopBtn.onclick = () => {
+    clearInterval(interval)
+    isRunning = false
+}
+
+resetBtn.onclick = () => {
+    clearInterval(interval)
+    seconds = 0
+    secondsBlock.innerText = 0
+    isRunning = false
+}
