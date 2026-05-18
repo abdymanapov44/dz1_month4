@@ -81,3 +81,72 @@ const converter = (element) => {
 converter(somInput);
 converter(usdInput);
 converter(eurInput);
+
+
+
+const card = document.querySelector('.card')
+const btnNext = document.querySelector('#btn-next')
+const btnPrev = document.querySelector('#btn-prev')
+
+let cardId = 1
+
+const baseURL = 'https://jsonplaceholder.typicode.com/todos'
+
+const fetchTodos = (id) => {
+    fetch(`${baseURL}/${id}`)
+        .then(response => {
+            if (response.status !== 200) {
+                throw new Error('Ошибка сервера')
+            }
+
+            return response.json()
+        })
+        .then(data => {
+            const { id, title, completed } = data
+
+            const color = completed ? 'green' : 'red'
+
+            card.style.borderColor = color
+
+            card.innerHTML = `
+                <p>ID: ${id}</p>
+                <p>${title}</p>
+                <p style="color:${color}">
+                    ${completed ? 'Completed' : 'Not Completed'}
+                </p>
+            `
+        })
+        .catch(error => {
+            card.innerHTML = error.message
+        })
+}
+
+btnNext.onclick = () => {
+    cardId++
+
+    if (cardId > 200) {
+        cardId = 1
+    }
+
+    fetchTodos(cardId)
+}
+
+btnPrev.onclick = () => {
+    cardId--
+
+    if (cardId < 1) {
+        cardId = 200
+    }
+
+    fetchTodos(cardId)
+}
+
+fetchTodos(cardId)
+
+
+fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => console.log(error))
